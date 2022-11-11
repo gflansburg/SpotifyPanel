@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Spotify Remote Web Controller</title>
+	<meta name="theme-color" content="#1DB954" />
+	[styles.css]
+	[helpers.js]
+	[jquery.min.js]
+	[page-handler.js]
+	[vibrant.min.js]
+	[spotify-web-api.js]
+	[spotify-handler.js]
+</head>
+	<body onload="spotifyHandler.init();">
+		<div class="page active" id="loadingpage">
+			<div id="loading" style="display: table; width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px;">
+				<div style="display: table-cell; vertical-align: middle;">
+					<div style="margin-left: auto; margin-right: auto; text-align: center;">
+						<div class="spinner"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="page" id="signinpage">
+			<h1 id="welcome">Welcome to the Spotify Web Controller</h1>
+			<p>You have to sign in with your Spotify account in order to control playback. Check your external browser.</p>
+			<button class="bigbutton" id="signinbtn">Refresh</button>
+			<p class="disclaimer footer"><small>This web application is <b>not</b> owned by Spotify AB. It was instead built by <a href="https://www.gafware.com/">Glenn Flansburg</a> using the official <a href="https://developer.spotify.com/documentation/web-api/">Spotify Web API</a>.</small></p>
+		</div>
+		<div class="page" id="discoverpage">
+			<div style="display: table; width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px;">
+				<div style="display: table-cell; vertical-align: middle;">
+					<h2>Looking for instances of Spotify...</h2>
+					<p id="discover-disclaimer" class="disclaimer">Open Spotify on your computer, smartphone, or anything else. You will be able to control playback here once you've done so.</p>
+					<div id="discoverspinner" class="spinner"></div>
+					<div id="discoverlist-holder" style="display: none;">
+						<div class="selectdevice">Which device would you like to use?</div>
+						<ul id="discoverlist"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="page" id="devicespage">
+			<div id="deviceslist">
+				<div id="listeningon-holder">
+					<div id="listeningon-icon" class="devicelist-item"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 4s0-2 2-2h12s2 0 2 2v6s0 2-2 2h-4c0 .667.083 1.167.25 1.5H11a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1h.75c.167-.333.25-.833.25-1.5H2s-2 0-2-2V4zm1.398-.855a.758.758 0 0 0-.254.302A1.46 1.46 0 0 0 1 4.01V10c0 .325.078.502.145.602.07.105.17.188.302.254a1.464 1.464 0 0 0 .538.143L2.01 11H14c.325 0 .502-.078.602-.145a.758.758 0 0 0 .254-.302 1.464 1.464 0 0 0 .143-.538L15 9.99V4c0-.325-.078-.502-.145-.602a.757.757 0 0 0-.302-.254A1.46 1.46 0 0 0 13.99 3H2c-.325 0-.502.078-.602.145z" /></svg></div>
+					<div id="listeningon-title">Listening on</div>
+					<div id="listeningon"></div>
+				</div>
+				<div class="selectdevice">Select a device</div>
+				<div id="devicelist-holder">
+					<ul id="devicelist"></ul>
+				</div>
+			</div>
+			<div id="volumebar-holder">
+				<div id="volumebar-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z" /><path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.483 5.483 0 0 1 11.025 8a5.483 5.483 0 0 1-1.61 3.89l.706.706z" /><path d="M8.707 11.182A4.486 4.486 0 0 0 10.025 8a4.486 4.486 0 0 0-1.318-3.182L8 5.525A3.489 3.489 0 0 1 9.025 8 3.49 3.49 0 0 1 8 10.475l.707.707zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z" /></svg></div><input id="volumebar" type="range" min="0" max="100" value="50" step="1" title="Volume" />
+			</div>
+			<button id="devicespageclose-button" class="close-button" onclick="pageHandler.showPage('playerpage');" title="Close"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" /></svg></button>
+		</div>
+		<div class="page" id="queuepage">
+			<h2 id="contextname" class="list-header"></h2>
+			<div id="queue-holder">
+				<ul id="queue" class="tracklist"></ul>
+			</div>
+			<button id="queuepageclose-button" class="close-button" onclick="pageHandler.showPage('playerpage');" title="Close"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" /></svg></button>
+		</div>
+		<div class="page" id="librarypage">
+			<h2 class="list-header">Playlists &amp; albums</h2>
+			<div id="library-holder">
+				<ul id="library" class="tracklist"></ul>
+			</div>
+			<button id="librarypageclose-button" class="close-button" onclick="pageHandler.showPage('playerpage');" title="Close"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" /></svg></button>
+		</div>
+		<div class="page" id="searchpage">
+			<h2 class="list-header">Search</h2>
+			<div id="search-holder">
+				<div id="searchbar-wrapper">
+					<table style="width: 100%">
+						<tr>
+							<td><input type="text" id="searchbar" placeholder="Search Spotify" /></td>
+							<td style="width: 30px;"><button class="searchbutton" onclick="spotifyHandler.search(document.getElementById('searchbar').value)" title="Search"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" /></svg></button></td>
+						</tr>
+					</table>
+					<br />
+					<div id="keyboard">
+						<table cellpadding="0" cellspacing="0">
+							<tr>
+								<td>
+									<div>
+										<div style="display: block">
+											<button class="keys" onclick="typ('Q')">Q</button>
+											<button class="keys" onclick="typ('W')">W</button>
+											<button class="keys" onclick="typ('E')">E</button>
+											<button class="keys" onclick="typ('R')">R</button>
+											<button class="keys" onclick="typ('T')">T</button>
+											<button class="keys" onclick="typ('Y')">Y</button>
+											<button class="keys" onclick="typ('U')">U</button>
+											<button class="keys" onclick="typ('I')">I</button>
+											<button class="keys" onclick="typ('O')">O</button>
+											<button class="keys" onclick="typ('P')">P</button>
+										</div>
+										<div style="display: block">
+											<button class="keys" onclick="typ('A')">A</button>
+											<button class="keys" onclick="typ('S')">S</button>
+											<button class="keys" onclick="typ('D')">D</button>
+											<button class="keys" onclick="typ('F')">F</button>
+											<button class="keys" onclick="typ('G')">G</button>
+											<button class="keys" onclick="typ('H')">H</button>
+											<button class="keys" onclick="typ('J')">J</button>
+											<button class="keys" onclick="typ('K')">K</button>
+											<button class="keys" onclick="typ('L')">L</button>
+											<button class="keys" onclick="typ('\'')">'</button>
+										</div>
+										<div style="display: block">
+											<button class="keys" onclick="typ('Z')">Z</button>
+											<button class="keys" onclick="typ('X')">X</button>
+											<button class="keys" onclick="typ('C')">C</button>
+											<button class="keys" onclick="typ('V')">V</button>
+											<button class="keys" onclick="typ('B')">B</button>
+											<button class="keys" onclick="typ('N')">N</button>
+											<button class="keys" onclick="typ('M')">M</button>
+											<button class="keys" onclick="typ(',')">,</button>
+											<button class="keys" onclick="typ('.')">.</button>
+											<button class="backspace" onclick="bck()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.83 5.146a.5.5 0 0 0 0 .708L7.975 8l-2.147 2.146a.5.5 0 0 0 .707.708l2.147-2.147 2.146 2.147a.5.5 0 0 0 .707-.708L9.39 8l2.146-2.146a.5.5 0 0 0-.707-.708L8.683 7.293 6.536 5.146a.5.5 0 0 0-.707 0z" /><path d="M13.683 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7.08a2 2 0 0 1-1.519-.698L.241 8.65a1 1 0 0 1 0-1.302L5.084 1.7A2 2 0 0 1 6.603 1h7.08zm-7.08 1a1 1 0 0 0-.76.35L1 8l4.844 5.65a1 1 0 0 0 .759.35h7.08a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-7.08z" /></svg></button>
+										</div>
+										<div style="display: block; margin-left:34px">
+											<button class="keys" onclick="typ(' ')" style="width: 270px"><span style="border-bottom: 1px solid #A88900">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+										</div>
+									</div>
+								</td>
+								<td>
+									<div>
+										<div style="display: block; margin-left: 8px;">
+											<button class="keys" onclick="typ('/')">/</button>
+											<button class="keys" onclick="typ('*')">*</button>
+											<button class="keys" onclick="typ('-')">-</button>
+										</div>
+										<div style="display: block; margin-left: 8px;">
+											<button class="keys" onclick="typ('7')">7</button>
+											<button class="keys" onclick="typ('8')">8</button>
+											<button class="keys" onclick="typ('9')">9</button>
+										</div>
+										<div style="display: block; margin-left: 8px">
+											<button class="keys" onclick="typ('4')">4</button>
+											<button class="keys" onclick="typ('5')">5</button>
+											<button class="keys" onclick="typ('6')">6</button>
+										</div>
+										<div style="display: block; margin-left: 8px">
+											<button class="keys" onclick="typ('1')">1</button>
+											<button class="keys" onclick="typ('2')">2</button>
+											<button class="keys" onclick="typ('3')">3</button>
+										</div>
+									</div>
+								</td>
+								<td style="padding-left: 2px;">
+									<div style="display: block">
+										<button class="keys" onclick="typ('+')">+</button>
+									</div>
+									<div style="display: block">
+										<button class="keys" onclick="typ('0')" style="height:102px;">0</button>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<ul id="search" class="tracklist"></ul>
+			</div>
+			<button id="searchpageclose-button" class="close-button" onclick="pageHandler.showPage('playerpage');" title="Close"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" /></svg></button>
+		</div>
+		<div class="page" id="playerpage">
+			<div id="topbar">
+				<button id="library-button" onclick="pageHandler.showPage('librarypage');" title="View your playlists and saved albums"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" /></svg></button>
+				<div id="playing-from-holder">
+					<div id="playing-from"></div>
+					<div id="playing-from-name"></div>
+				</div>
+				<button id="search-button" onclick="pageHandler.showPage('searchpage');" title="Search Spotify"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" /></svg></button>
+			</div>
+			<div id="art-holder">
+				<img id="artwork" crossOrigin="anonymous" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+			</div>
+			<div id="below-art-holder">
+				<div id="metadata-holder-holder">
+					<div id="metadata-holder">
+						<div id="title"></div>
+						<div id="artist"></div>
+					</div>
+					<button id="like-button" title="Add to liked songs" data-liked="false"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" /></svg></button>
+				</div>
+				<div id="seekbar-holder">
+					<div id="progressbar-outer">
+						<div class="progressbar-inner" id="barbackground"></div>
+						<div class="progressbar-inner" id="bufferbar"></div>
+						<div class="progressbar-inner" id="progressbar"></div>
+					</div>
+					<div id="times"><span id="playback-time"></span><span id="duration-time"></span></div>
+				</div>
+				<div id="controls-holder">
+					<button class="side-button" id="shuffle-button" title="Shuffle"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.624 9.624 0 0 0 7.556 8a9.624 9.624 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.595 10.595 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.624 9.624 0 0 0 6.444 8a9.624 9.624 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5z" /><path d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192zm0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192z" /></svg></button>
+					<button class="skip-button" id="previous-button" title="Previous"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 4a.5.5 0 0 1 1 0v3.248l6.267-3.636c.54-.313 1.232.066 1.232.696v7.384c0 .63-.692 1.01-1.232.697L5 8.753V12a.5.5 0 0 1-1 0V4z" /></svg></button>
+					<button class="main-button" id="play-pause-button" title="Play"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z" /></svg></button>
+					<button class="skip-button" id="next-button" title="Next"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M12.5 4a.5.5 0 0 0-1 0v3.248L5.233 3.612C4.693 3.3 4 3.678 4 4.308v7.384c0 .63.692 1.01 1.233.697L11.5 8.753V12a.5.5 0 0 0 1 0V4z" /></svg></button>
+					<button class="side-button" id="repeat-button" title="Repeat"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192Zm3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z" /></svg></button>
+				</div>
+				<div id="bottombar">
+					<button class="bar-button" id="devices-button" title="Available devices" data-curdevice=""><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 1a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V1Zm1 13.5a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0Zm2 0a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0ZM9.5 1a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5ZM9 3.5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0-.5.5ZM1.5 2A1.5 1.5 0 0 0 0 3.5v7A1.5 1.5 0 0 0 1.5 12H6v2h-.5a.5.5 0 0 0 0 1H7v-4H1.5a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5H7V2H1.5Z"/></svg></button>
+					<button class="bar-button" id="queue-button" title="Queue" disabled><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" /></svg></button>
+				</div>
+			</div>
+		</div>
+		[progressbar.js]
+		<script>
+			window.onbeforeunload = function(e) {
+				pageHandler.showPage("loadingpage");
+			};
+			var changingVolume = false;
+			document.getElementById("volumebar").addEventListener("input", function(event) {
+				spotifyHandler.setVolume(event.target.value, true);
+			});
+			document.getElementById("volumebar").addEventListener("mousedown", function(event) {
+				changingVolume = true;
+			});
+			document.getElementById("volumebar").addEventListener("touchstart", function(event) {
+				changingVolume = true;
+			});
+			document.getElementById("volumebar").addEventListener("mouseup", function(event) {
+				spotifyHandler.setVolume(event.target.value, false);
+				changingVolume = false;
+			});
+			document.getElementById("volumebar").addEventListener("touchend", function(event) {
+				spotifyHandler.setVolume(event.target.value, false);
+				changingVolume = false;
+			});
+		</script>
+	</body>
+</html>

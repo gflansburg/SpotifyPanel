@@ -1,0 +1,7 @@
+<Project Version="2" Name="gafware-ingamepanel-spotify" FolderName="Packages">
+	<OutputDirectory>.</OutputDirectory>
+	<TemporaryOutputDirectory>_PackageInt</TemporaryOutputDirectory>
+	<Packages>
+		<Package>PackageDefinitions\gafware-ingamepanel-spotify.xml</Package>
+	</Packages>
+</Project>

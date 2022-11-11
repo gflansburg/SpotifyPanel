@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DE20898B-634A-43E9-9EC0-1471BBA59A5A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>SpotifyPanel</RootNamespace>
+    <AssemblyName>SpotifyPanel</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.1418.22, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1418.22\lib\net45\Microsoft.Web.WebView2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.1418.22, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1418.22\lib\net45\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.1418.22, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1418.22\lib\net45\Microsoft.Web.WebView2.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Unosquare.Labs.EmbedIO, Version=2.2.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EmbedIO.2.2.9\lib\net472\Unosquare.Labs.EmbedIO.dll</HintPath>
+    </Reference>
+    <Reference Include="Unosquare.Swan.Lite, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unosquare.Swan.Lite.1.0.0\lib\net452\Unosquare.Swan.Lite.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpotifyAPI.Web.Auth\AuthorizationCodeAuth.cs" />
+    <Compile Include="SpotifyAPI.Web.Auth\AuthUtil.cs" />
+    <Compile Include="SpotifyAPI.Web.Auth\CredentialsAuth.cs" />
+    <Compile Include="SpotifyAPI.Web.Auth\ImplictGrantAuth.cs" />
+    <Compile Include="SpotifyAPI.Web.Auth\SpotifyAuthServer.cs" />
+    <Compile Include="SpotifyAPI.Web\Enums\AlbumType.cs" />
+    <Compile Include="SpotifyAPI.Web\Enums\FollowType.cs" />
+    <Compile Include="SpotifyAPI.Web\Enums\RepeatState.cs" />
+    <Compile Include="SpotifyAPI.Web\Enums\Scope.cs" />
+    <Compile Include="SpotifyAPI.Web\Enums\SearchType.cs" />
+    <Compile Include="SpotifyAPI.Web\Enums\TimeRangeType.cs" />
+    <Compile Include="SpotifyAPI.Web\Enums\TrackType.cs" />
+    <Compile Include="SpotifyAPI.Web\IClient.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\AnalysisMeta.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\AnalysisSection.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\AnalysisSegment.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\AnalysisTimeSlice.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\AnalysisTrack.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\ArrayResponse.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\AudioAnalysis.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\AudioFeatures.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\AvailabeDevices.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\BasicModel.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\Category.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\CategoryList.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\CategoryPlaylist.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\CursorPaging.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\Device.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\FeaturedPlaylists.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\FollowedArtists.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\FullAlbum.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\FullArtist.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\FullPlaylist.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\FullTrack.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\GeneralModels.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\NewAlbumReleases.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\Paging.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\PlaybackContext.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\PlayHistory.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\PrivateProfile.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\PublicProfile.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\Recommendations.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\RecommendationSeed .cs" />
+    <Compile Include="SpotifyAPI.Web\Models\RecommendationSeedGenres.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\ResponseInfo.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\SearchItem.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\SeveralAlbums.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\SeveralArtists.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\SeveralAudioFeatures.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\SeveralTracks.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\SimpleAlbum.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\SimpleArtist.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\SimplePlaylist.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\SimpleTrack.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\Snapshot.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\Token.cs" />
+    <Compile Include="SpotifyAPI.Web\Models\TuneableTrack.cs" />
+    <Compile Include="SpotifyAPI.Web\ProxyConfig.cs" />
+    <Compile Include="SpotifyAPI.Web\SpotifyWebAPI.cs" />
+    <Compile Include="SpotifyAPI.Web\SpotifyWebBuilder.cs" />
+    <Compile Include="SpotifyAPI.Web\SpotifyWebClient.cs" />
+    <Compile Include="SpotifyAPI.Web\Util.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Client\gafware-ingamepanel-spotify\build.bat" />
+    <None Include="Client\gafware-ingamepanel-spotify\PackageDefinitions\gafware-ingamepanel-spotify\Business.json" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="SpotifyAPI.Web\PlayerClient.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TinyWeb\TinyWeb.csproj">
+      <Project>{87aeeeaa-2988-4137-b3aa-08a1b536b60f}</Project>
+      <Name>TinyWeb</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Client\gafware-ingamepanel-spotify\gafware-ingamepanel-spotify.xml" />
+    <Content Include="Client\gafware-ingamepanel-spotify\PackageDefinitions\gafware-ingamepanel-spotify.xml" />
+    <Content Include="Client\gafware-ingamepanel-spotify\PackageDefinitions\gafware-ingamepanel-spotify\ContentInfo\Thumbnail.jpg" />
+    <Content Include="Client\gafware-ingamepanel-spotify\PackageDefinitions\gafware-ingamepanel-spotify\ReleaseNotes.xml" />
+    <Content Include="Client\gafware-ingamepanel-spotify\PackageSources\InGamePanels\InGamePanel_Spotify.xml" />
+    <Content Include="Client\gafware-ingamepanel-spotify\static\html_ui\icons\toolbar\ICON_TOOLBAR_SPOTIFY.svg" />
+    <Content Include="Client\gafware-ingamepanel-spotify\static\html_ui\InGamePanels\SpotifyPanel\SpotifyPanel.css" />
+    <Content Include="Client\gafware-ingamepanel-spotify\static\html_ui\InGamePanels\SpotifyPanel\SpotifyPanel.html" />
+    <Content Include="Client\gafware-ingamepanel-spotify\static\html_ui\InGamePanels\SpotifyPanel\SpotifyPanel.js" />
+    <Content Include="favicon.ico" />
+    <EmbeddedResource Include="www\jquery.min.js" />
+    <None Include="Resources\icon.png" />
+    <None Include="Resources\settings.png" />
+    <None Include="Resources\settings.ico" />
+    <None Include="Resources\metal-horns.png" />
+    <Content Include="SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\css\bulma.min.css" />
+    <Content Include="SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\images\1.png" />
+    <Content Include="SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\images\2.png" />
+    <Content Include="SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\start.html" />
+    <Content Include="SpotifyAPI.Web.Auth\Resources\ImplicitGrantAuth\index.html" />
+    <EmbeddedResource Include="www\helpers.js" />
+    <EmbeddedResource Include="www\index.html" />
+    <EmbeddedResource Include="www\page-handler.js" />
+    <EmbeddedResource Include="www\progressbar.js" />
+    <EmbeddedResource Include="www\spotify-handler.js" />
+    <EmbeddedResource Include="www\spotify-web-api.js" />
+    <EmbeddedResource Include="www\styles.css" />
+    <EmbeddedResource Include="www\vibrant.min.js" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.1418.22\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.1418.22\build\Microsoft.Web.WebView2.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.1418.22\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.1418.22\build\Microsoft.Web.WebView2.targets'))" />
+  </Target>
+</Project>
