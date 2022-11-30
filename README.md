@@ -10,8 +10,8 @@ Display a VR compatibale Spotify in-game remote in a Microsoft Flight Simulator 
 2. Extract the contents of the "Client" folder into your MSFS 2020 Community folder.
 3. Extract the contents of the "Server" folder into a location of your choosing.
 4. Run SpotifyPanel.exe and click on the Settings icon. You will need to provide your own Spotify developer keys.
-5. Visit the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/) to create or find your keys.
-5. (Optional) Add SpotifyPanel.exe to your EXE.xml so that it automatically launches when you run MSFS 2020.
+5. Visit the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/) to create or find your keys. Ensure that your Spotify application has a Redirect URI for http://localhost:52000 and http://localhost:52000/ (yes, you need one with and without the trailing slash). This URI is used to pass the Authentication Token from Spotify back to Spotify Panel.
+6. (Optional) Add SpotifyPanel.exe to your EXE.xml so that it automatically launches when you run MSFS 2020.
 
 ## Running
 Spotify Panel will run in the system tray. Right click on the system tray icon to show or close the server application. Additionaly, you may double-click on the system tray icon to show it. Once Spotify Panel is configured with your Spotify developer keys, subsequent launches of Spotify Panel will load minimized into the system tray. After entering your Spotify developer keys, Spotify Panel will open an embedded browser in order for you to authenticate and give permissions for it to pull information from your Spotify account. After that, refreshing the token should happen without any user intervention.
