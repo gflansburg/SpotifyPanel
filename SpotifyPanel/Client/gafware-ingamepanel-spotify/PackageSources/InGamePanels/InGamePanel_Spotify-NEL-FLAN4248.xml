@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SimBase.Document Type="InGamePanels" version="1.0">
+    <Filename>InGamePanel_Spotify.spb</Filename>
+    <InGamePanels.InGamePanelDefinition
+        id="SPOTIFY_PANEL"
+        Name="Spotify"
+        url="html_ui/InGamePanels/SpotifyPanel/SpotifyPanel.html"
+        resizeDirections="Both"
+        minWidth="4"
+        minHeight="4"
+        defaultWidth="96"
+        defaultHeight="128"
+        defaultTop="33"
+        defaultRight="2"
+        icon="ICON_TOOLBAR_SPOTIFY"
+        buttonVisible="true"
+    >
+    </InGamePanels.InGamePanelDefinition>
+</SimBase.Document>

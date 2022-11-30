@@ -5,15 +5,21 @@ using System;
 using System.IO;
 using System.Net;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
-using TinyWeb;
+using Unosquare.Labs.EmbedIO;
+using Unosquare.Labs.EmbedIO.Modules;
+
 namespace SpotifyPanel
 {
 	public partial class Form1 : Form
 	{
+		public static Form1 Instance;
 		private Token _token = null;
 		private bool isAuthenticating = false;
 		private AuthorizationCodeAuth authorizationCodeAuth;
+		protected CancellationTokenSource serverSource;
+		private WebServer webServer;
 
 		public Token Token
 		{
@@ -71,6 +77,7 @@ namespace SpotifyPanel
 
 		public Form1()
 		{
+			Instance = this;
 			InitializeComponent();
 		}
 
@@ -81,18 +88,21 @@ namespace SpotifyPanel
 			lblExpires.Visible = IsAuthorized;
 			lblDate.Visible = IsAuthorized;
 			webView21.Visible = isAuthenticating;
-			if (Token == null)
+			if (!isAuthenticating)
 			{
-				Authenticate();
-			}
-			else if (Token.IsExpired())
-			{
-				RefreshToken();
-			}
-			else
-            {
-				TimeSpan t = (Token.CreateDate.Add(TimeSpan.FromSeconds(Token.ExpiresIn)) - DateTime.Now);
-				lblDate.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
+				if (Token == null)
+				{
+					Authenticate();
+				}
+				else if (Token.IsExpired())
+				{
+					RefreshToken();
+				}
+				else
+				{
+					TimeSpan t = (Token.CreateDate.Add(TimeSpan.FromSeconds(Token.ExpiresIn)) - DateTime.Now);
+					lblDate.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
+				}
 			}
 		}
 
@@ -110,10 +120,16 @@ namespace SpotifyPanel
 				authorizationCodeAuth.AuthReceived += AuthOnAuthReceived;
 				try
 				{
-					webServer.EndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5150);
-					webServer.IsStarted = true;
+					serverSource = new CancellationTokenSource();
+					webServer = WebServer.Create(string.Format("http://127.0.0.1:{0}", 5150));
+					webServer.RegisterModule(new WebApiModule());
+					webServer.Module<WebApiModule>().RegisterController<SpotifyPanelController>();
+					webServer.RegisterModule(new ResourceFilesModule(Assembly.GetExecutingAssembly(), GetEmbededResourcePath));
+#pragma warning disable 4014
+					webServer.RunAsync(serverSource.Token);
+#pragma warning restore 4014
 				}
-				catch(Exception)
+				catch (Exception)
                 {
 					lblStatus.Text = "Port 5150 already in use!";
 					lblStatus.ForeColor = System.Drawing.Color.Red;
@@ -135,33 +151,16 @@ namespace SpotifyPanel
 			}
 		}
 
-		private string ReplaceCSS(string html, string filename)
+		public static string ReplaceCSS(string html, string filename)
 		{
 			string text = GetEmbededResource(filename);
 			return html.Replace(string.Format("[{0}]", filename), string.Format("<style type=\"text/css\">\r\n{0}</style>\r\n", text));
 		}
 
-		private string ReplaceJS(string html, string filename)
+		public static string ReplaceJS(string html, string filename)
         {
 			string text = GetEmbededResource(filename);
 			return html.Replace(string.Format("[{0}]", filename), string.Format("<script type=\"text/javascript\">\r\n{0}</script>\r\n", text));
-		}
-
-		void webServer_ProcessRequest(object sender, ProcessRequestEventArgs args)
-		{
-			string html = GetEmbededResource("index.html");
-			html = ReplaceCSS(html, "styles.css");
-			html = ReplaceJS(html, "helpers.js");
-			html = ReplaceJS(html, "jquery.min.js");
-			html = ReplaceJS(html, "page-handler.js");
-			html = ReplaceJS(html, "vibrant.min.js");
-			html = ReplaceJS(html, "spotify-web-api.js");
-			html = ReplaceJS(html, "spotify-handler.js");
-			html = ReplaceJS(html, "progressbar.js");
-			html = html.Replace("[Access-Token]", string.Format("{0}", Token != null ? Token.AccessToken : string.Empty));
-			html = html.Replace("[Expires-In]", string.Format("{0}", Token != null ? Token.CreateDate.Add(TimeSpan.FromSeconds(Token.ExpiresIn)).ToString() : DateTime.Now.ToString()));
-			args.Response.ContentType = "text/html";
-			args.Response.Write(html);
 		}
 
         private void btnSettings_Click(object sender, EventArgs e)
@@ -262,13 +261,7 @@ namespace SpotifyPanel
 
 		private void Form1_Load(object sender, EventArgs e)
         {
-			Token = Properties.Settings.Default.Token;
-			if (IsConfigured)
-			{
-				Visible = false;
-				ShowInTaskbar = false;
-			}
-			ConfigureSpotifyAuthentication();
+			_token = Properties.Settings.Default.Token;
 		}
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -276,7 +269,16 @@ namespace SpotifyPanel
 			ShowWindow();
         }
 
-		protected string GetEmbededResource(string name)
+		static public string GetEmbededResourcePath
+		{
+			get
+			{
+				Assembly thisAssembly = Assembly.GetExecutingAssembly();
+				return thisAssembly.GetName().Name + ".www";
+			}
+		}
+
+		public static string GetEmbededResource(string name)
         {
 			Assembly thisAssembly = Assembly.GetExecutingAssembly();
 			string appName = thisAssembly.GetName().Name;
@@ -293,5 +295,15 @@ namespace SpotifyPanel
         {
 			AuthUtil.OpenBrowser("https://developer.spotify.com/dashboard/");
         }
-    }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+			if (IsConfigured)
+			{
+				Visible = false;
+				ShowInTaskbar = false;
+			}
+			ConfigureSpotifyAuthentication();
+		}
+	}
 }

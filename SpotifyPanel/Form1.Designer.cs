@@ -30,7 +30,6 @@
 		{
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.webServer = new TinyWeb.WebServer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.pnlSettings = new System.Windows.Forms.GroupBox();
@@ -46,6 +45,7 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlMain = new System.Windows.Forms.Panel();
+            this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.lblDate = new System.Windows.Forms.Label();
             this.lblExpires = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
@@ -54,20 +54,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.btnSettings = new System.Windows.Forms.Button();
-            this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.pnlSettings.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.pnlMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
             this.SuspendLayout();
-            // 
-            // webServer
-            // 
-            this.webServer.EndPoint = ((System.Net.IPEndPoint)(resources.GetObject("webServer.EndPoint")));
-            this.webServer.IsStarted = false;
-            this.webServer.ProcessRequest += new TinyWeb.ProcessRequestEventHandler(this.webServer_ProcessRequest);
             // 
             // timer2
             // 
@@ -219,6 +212,22 @@
             this.pnlMain.Size = new System.Drawing.Size(297, 410);
             this.pnlMain.TabIndex = 14;
             // 
+            // webView21
+            // 
+            this.webView21.AllowExternalDrop = false;
+            this.webView21.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.webView21.CreationProperties = null;
+            this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
+            this.webView21.Location = new System.Drawing.Point(0, 0);
+            this.webView21.Name = "webView21";
+            this.webView21.Size = new System.Drawing.Size(295, 410);
+            this.webView21.Source = new System.Uri("https://www.spotify.com", System.UriKind.Absolute);
+            this.webView21.TabIndex = 15;
+            this.webView21.Visible = false;
+            this.webView21.ZoomFactor = 1D;
+            // 
             // lblDate
             // 
             this.lblDate.AutoSize = true;
@@ -275,9 +284,9 @@
             this.label2.ForeColor = System.Drawing.SystemColors.Highlight;
             this.label2.Location = new System.Drawing.Point(69, 123);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(107, 13);
+            this.label2.Size = new System.Drawing.Size(110, 13);
             this.label2.TabIndex = 18;
-            this.label2.Text = "http://localhost:5150";
+            this.label2.Text = "http://127.0.0.1:5150";
             this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // pictureBox2
@@ -302,22 +311,6 @@
             this.btnSettings.UseVisualStyleBackColor = true;
             this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
             // 
-            // webView21
-            // 
-            this.webView21.AllowExternalDrop = false;
-            this.webView21.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.webView21.CreationProperties = null;
-            this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
-            this.webView21.Location = new System.Drawing.Point(0, 0);
-            this.webView21.Name = "webView21";
-            this.webView21.Size = new System.Drawing.Size(295, 410);
-            this.webView21.Source = new System.Uri("https://www.spotify.com", System.UriKind.Absolute);
-            this.webView21.TabIndex = 15;
-            this.webView21.Visible = false;
-            this.webView21.ZoomFactor = 1D;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -334,21 +327,21 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Spotify Panel";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Shown += new System.EventHandler(this.Form1_Shown);
             this.pnlSettings.ResumeLayout(false);
             this.pnlSettings.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
             this.pnlMain.ResumeLayout(false);
             this.pnlMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
             this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private TinyWeb.WebServer webServer;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.GroupBox pnlSettings;

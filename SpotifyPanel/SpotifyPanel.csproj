@@ -143,6 +143,7 @@
     <Compile Include="SpotifyAPI.Web\SpotifyWebBuilder.cs" />
     <Compile Include="SpotifyAPI.Web\SpotifyWebClient.cs" />
     <Compile Include="SpotifyAPI.Web\Util.cs" />
+    <Compile Include="SpotifyPanelController.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -172,12 +173,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TinyWeb\TinyWeb.csproj">
-      <Project>{87aeeeaa-2988-4137-b3aa-08a1b536b60f}</Project>
-      <Name>TinyWeb</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Client\gafware-ingamepanel-spotify\gafware-ingamepanel-spotify.xml" />
