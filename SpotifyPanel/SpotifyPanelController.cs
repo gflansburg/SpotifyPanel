@@ -26,6 +26,13 @@ namespace SpotifyPanel
 			return this.StringResponseAsync(html, "text/html");
 		}
 
+		[WebApiHandler(HttpVerbs.Get, "/spotify.html")]
+		public Task<bool> GetSpotify()
+		{
+			string html = GetDefault();
+			return this.StringResponseAsync(html, "text/html");
+		}
+
 		private string GetDefault()
         {
 			string html = Form1.GetEmbededResource("index.html");

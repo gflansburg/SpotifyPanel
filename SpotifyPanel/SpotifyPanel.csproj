@@ -185,6 +185,7 @@
     <Content Include="Client\gafware-ingamepanel-spotify\static\html_ui\InGamePanels\SpotifyPanel\SpotifyPanel.html" />
     <Content Include="Client\gafware-ingamepanel-spotify\static\html_ui\InGamePanels\SpotifyPanel\SpotifyPanel.js" />
     <Content Include="favicon.ico" />
+    <EmbeddedResource Include="www\favicon.ico" />
     <EmbeddedResource Include="www\jquery.min.js" />
     <None Include="Resources\icon.png" />
     <None Include="Resources\settings.png" />

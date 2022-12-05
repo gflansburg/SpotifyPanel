@@ -6,6 +6,7 @@ var spotifyHandler = {
 	dom: {},
 	progress: 0,
 	duration: 0,
+	volume: 50,
 	lastTrackId: "null2",
 	lastQueueId: "null2",
 	lastPlaybackStatus: {},
@@ -39,12 +40,17 @@ var spotifyHandler = {
 					if (data.item.id != spotifyHandler.lastTrackId) {
 						spotifyHandler.lastTrackId = data.item.id;
 						if (data.item.album.images.length > 0) {
-							spotifyHandler.dom.artwork.src = data.item.album.images[0].url;
+							if (spotifyHandler.dom.artwork.src != data.item.album.images[0].url) {
+								spotifyHandler.dom.artwork.src = data.item.album.images[0].url;
+							}
+						} else {
+							if (spotifyHandler.dom.artwork.src != "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7") {
+								spotifyHandler.dom.artwork.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+							}
 						}
-						else {
-							spotifyHandler.dom.artwork.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+						if (spotifyHandler.dom.title.innerHTML != stripTags(data.item.name)) {
+							spotifyHandler.dom.title.innerHTML = stripTags(data.item.name);
 						}
-						spotifyHandler.dom.title.innerHTML = stripTags(data.item.name);
 						var tempArtists = "";
 						for (var i = 0; i < data.item.artists.length; i++) {
 							tempArtists += data.item.artists[i].name;
@@ -52,19 +58,26 @@ var spotifyHandler = {
 								tempArtists += ", ";
 							}
 						}
-						spotifyHandler.dom.artist.innerHTML = stripTags(tempArtists);
+						if (spotifyHandler.dom.artist.innerHTML != stripTags(tempArtists)) {
+							spotifyHandler.dom.artist.innerHTML = stripTags(tempArtists);
+						}
 						if (data.context != null) {
 							switch (data.context.type) {
 								case "playlist": {
 									spotifyHandler.api.getPlaylist(data.context.uri.split(":").pop(), {fields: "name,id"}, function(err, data) {
 										if (err) {
 											console.error(err);
-										}
-										else {
+										} else {
 											// console.log(data);
-											spotifyHandler.dom.playingFrom.innerHTML = "Playing from playlist";
-											spotifyHandler.dom.playingFromName.innerHTML = stripTags(data.name);
-											spotifyHandler.dom.contextName.innerHTML = stripTags(data.name);
+											if (spotifyHandler.dom.playingFrom.innerHTML != "Playing from playlist") {
+												spotifyHandler.dom.playingFrom.innerHTML = "Playing from playlist";
+											}
+											if (spotifyHandler.dom.playingFromName.innerHTML != stripTags(data.name)) {
+												spotifyHandler.dom.playingFromName.innerHTML = stripTags(data.name);
+											}
+											if (spotifyHandler.dom.contextName.innerHTML != stripTags(data.name)) {
+												spotifyHandler.dom.contextName.innerHTML = stripTags(data.name);
+											}
 											spotifyHandler.fillQueue("playlist", data.id);
 										}
 									});
@@ -77,9 +90,15 @@ var spotifyHandler = {
 										}
 										else {
 											// console.log(data);
-											spotifyHandler.dom.playingFrom.innerHTML = "Playing from album";
-											spotifyHandler.dom.playingFromName.innerHTML = stripTags(data.name);
-											spotifyHandler.dom.contextName.innerHTML = stripTags(data.name);
+											if (spotifyHandler.dom.playingFrom.innerHTML != "Playing from album") {
+												spotifyHandler.dom.playingFrom.innerHTML = "Playing from album";
+											}
+											if (spotifyHandler.dom.playingFromName.innerHTML != stripTags(data.name)) {
+												spotifyHandler.dom.playingFromName.innerHTML = stripTags(data.name);
+											}
+											if (spotifyHandler.dom.contextName.innerHTML != stripTags(data.name)) {
+												spotifyHandler.dom.contextName.innerHTML = stripTags(data.name);
+											}
 											spotifyHandler.fillQueue("album", data.id);
 										}
 									});
@@ -92,27 +111,44 @@ var spotifyHandler = {
 										}
 										else {
 											// console.log(data);
-											spotifyHandler.dom.playingFrom.innerHTML = "Playing from artist";
-											spotifyHandler.dom.playingFromName.innerHTML = stripTags(data.name);
-											spotifyHandler.dom.contextName.innerHTML = stripTags(data.name);
+											if (spotifyHandler.dom.playingFrom.innerHTML != "Playing from artist") {
+												spotifyHandler.dom.playingFrom.innerHTML = "Playing from artist";
+											}
+											if (spotifyHandler.dom.playingFromName.innerHTML != stripTags(data.name)) {
+												spotifyHandler.dom.playingFromName.innerHTML = stripTags(data.name);
+											}
+											if (spotifyHandler.dom.contextName.innerHTML != stripTags(data.name)) {
+												spotifyHandler.dom.contextName.innerHTML = stripTags(data.name);
+											}
 											spotifyHandler.fillQueue("artist", data.id);
 										}
 									});
 									break;
 								}
 								default: {
-									spotifyHandler.dom.playingFrom.innerHTML = "";
-									spotifyHandler.dom.playingFromName.innerHTML = "";
-									spotifyHandler.dom.contextName.innerHTML = "";
+									if (spotifyHandler.dom.playingFrom.innerHTML != "") {
+										spotifyHandler.dom.playingFrom.innerHTML = "";
+									}
+									if (spotifyHandler.dom.playingFromName.innerHTML != "") {
+										spotifyHandler.dom.playingFromName.innerHTML = "";
+									}
+									if (spotifyHandler.dom.contextName.innerHTML != "") {
+										spotifyHandler.dom.contextName.innerHTML = "";
+									}
 									spotifyHandler.fillQueue(null, null);
 									break;
 								}
 							}
-						}
-						else {
-							spotifyHandler.dom.playingFrom.innerHTML = "Playing from Your Library";
-							spotifyHandler.dom.playingFromName.innerHTML = "Liked Songs";
-							spotifyHandler.dom.contextName.innerHTML = "Liked Songs";
+						} else {
+							if (spotifyHandler.dom.playingFrom.innerHTML != "Playing from Your Library") {
+								spotifyHandler.dom.playingFrom.innerHTML = "Playing from Your Library";
+							}
+							if (spotifyHandler.dom.playingFromName.innerHTML != "Liked Songs") {
+								spotifyHandler.dom.playingFromName.innerHTML = "Liked Songs";
+							}
+							if (spotifyHandler.dom.contextName.innerHTML != "Liked Songs") {
+								spotifyHandler.dom.contextName.innerHTML = "Liked Songs";
+							}
 							spotifyHandler.fillQueue("library", "library");
 							console.log("No context for currently playing track, assuming library is being played");
 						}
@@ -137,78 +173,133 @@ var spotifyHandler = {
 					}
 					spotifyHandler.progress = Math.floor(data.progress_ms / 1000);
 					if (!progressBar.hovering) {
-						progressBar.setValue((data.progress_ms / data.item.duration_ms) * 100);
+						if (progressBar.getValue() != (data.progress_ms / data.item.duration_ms) * 100) {
+							progressBar.setValue((data.progress_ms / data.item.duration_ms) * 100);
+						}
 						spotifyHandler.updateTimes(spotifyHandler.progress, spotifyHandler.duration);
 					}
 
 					if (data.device.volume_percent != null) {
 						spotifyHandler.dom.volumebar.disabled = false;
-						spotifyHandler.setVolume(data.device.volume_percent, true);
+						if (spotifyHandler.getVolume() != data.device.volume_percent) {
+							spotifyHandler.setVolume(data.device.volume_percent, true);
+						}
 					}
 					else {
 						spotifyHandler.dom.volumebar.disabled = true;
 					}
 					
 					if (data.is_playing) {
-						spotifyHandler.dom.playPauseButton.title = "Pause";
-						spotifyHandler.dom.playPauseButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.25 5C5.56 5 5 5.56 5 6.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C7.5 5.56 6.94 5 6.25 5zm3.5 0c-.69 0-1.25.56-1.25 1.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C11 5.56 10.44 5 9.75 5z"/></svg>';
+						if (spotifyHandler.dom.playPauseButton.title != "Pause") {
+							spotifyHandler.dom.playPauseButton.title = "Pause";
+							spotifyHandler.dom.playPauseButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.25 5C5.56 5 5 5.56 5 6.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C7.5 5.56 6.94 5 6.25 5zm3.5 0c-.69 0-1.25.56-1.25 1.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C11 5.56 10.44 5 9.75 5z"/></svg>';
+						}
 					}
 					else {
-						spotifyHandler.dom.playPauseButton.title = "Play";
-						spotifyHandler.dom.playPauseButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z" /></svg>';
+						if (spotifyHandler.dom.playPauseButton.title != "Play") {
+							spotifyHandler.dom.playPauseButton.title = "Play";
+							spotifyHandler.dom.playPauseButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z" /></svg>';
+						}
 					}
 
 					if (!data.item.is_local) {
-						spotifyHandler.dom.likeButton.disabled = false;
-						spotifyHandler.dom.likeButton.style.display = "inline-block";
+						if (spotifyHandler.dom.likeButton.disabled != false) {
+							spotifyHandler.dom.likeButton.disabled = false;
+						}
+						if (spotifyHandler.dom.likeButton.style.display != "inline-block") {
+							spotifyHandler.dom.likeButton.style.display = "inline-block";
+						}
 						spotifyHandler.api.containsMySavedTracks([data.item.id], {}, function(err, data) {
 							if (err) {
 								console.error(err);
 							}
 							else if (data[0]) {
-								spotifyHandler.dom.likeButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/></svg>';
-								spotifyHandler.dom.likeButton.style.color = "#1DB954";
-								spotifyHandler.dom.likeButton.title = "Remove from liked songs";
-								spotifyHandler.dom.likeButton.setAttribute("data-liked", "true");
-							}
-							else {
-								spotifyHandler.dom.likeButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" /></svg>';
-								spotifyHandler.dom.likeButton.style.color = null;
-								spotifyHandler.dom.likeButton.title = "Add to liked songs";
-								spotifyHandler.dom.likeButton.setAttribute("data-liked", "false");
+								if (spotifyHandler.dom.likeButton.innerHTML != '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/></svg>') {
+									spotifyHandler.dom.likeButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/></svg>';
+								}
+								if (spotifyHandler.dom.likeButton.style.color != "#1DB954") {
+									spotifyHandler.dom.likeButton.style.color = "#1DB954";
+								}
+								if (spotifyHandler.dom.likeButton.title != "Remove from liked songs") {
+									spotifyHandler.dom.likeButton.title = "Remove from liked songs";
+								}
+								if (spotifyHandler.dom.likeButton.getAttribute("data-liked") != "true") {
+									spotifyHandler.dom.likeButton.setAttribute("data-liked", "true");
+								}
+							} else {
+								if (spotifyHandler.dom.likeButton.innerHTML != '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" /></svg>') {
+									spotifyHandler.dom.likeButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" /></svg>';
+								}
+								if (spotifyHandler.dom.likeButton.style.color != null) {
+									spotifyHandler.dom.likeButton.style.color = null;
+								}
+								if (spotifyHandler.dom.likeButton.title != "Add to liked songs") {
+									spotifyHandler.dom.likeButton.title = "Add to liked songs";
+								}
+								if (spotifyHandler.dom.likeButton.getAttribute("data-liked") != "false") {
+									spotifyHandler.dom.likeButton.setAttribute("data-liked", "false");
+								}
 							}
 						});
-					}
-					else {
-						spotifyHandler.dom.likeButton.disabled = true;
-						spotifyHandler.dom.likeButton.style.display = "none";
+					} else {
+						if (spotifyHandler.dom.likeButton.disabled != true) {
+							spotifyHandler.dom.likeButton.disabled = true;
+						}
+						if (spotifyHandler.dom.likeButton.style.display != "none") {
+							spotifyHandler.dom.likeButton.style.display = "none";
+						}
 					}
 
 					if (data.shuffle_state) {
-						spotifyHandler.dom.shuffleButton.style.color = "#1DB954";
-						spotifyHandler.dom.shuffleButton.className = "side-button dotted";
-					}
-					else {
-						spotifyHandler.dom.shuffleButton.style.color = null;
-						spotifyHandler.dom.shuffleButton.className = "side-button";
+						if (spotifyHandler.dom.shuffleButton.style.color != "#1DB954") {
+							spotifyHandler.dom.shuffleButton.style.color = "#1DB954";
+						}
+						if (spotifyHandler.dom.shuffleButton.className != "side-button dotted") {
+							spotifyHandler.dom.shuffleButton.className = "side-button dotted";
+						}
+					} else {
+						if (spotifyHandler.dom.shuffleButton.style.color != null) {
+							spotifyHandler.dom.shuffleButton.style.color = null;
+						}
+						if (spotifyHandler.dom.shuffleButton.className != "side-button") {
+							spotifyHandler.dom.shuffleButton.className = "side-button";
+						}
 					}
 
 					switch (data.repeat_state) {
 						case "context":
-							spotifyHandler.dom.repeatButton.style.color = "#1DB954";
-							spotifyHandler.dom.repeatButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192Zm3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z" /></svg>';
-							spotifyHandler.dom.repeatButton.className = "side-button dotted";
+							if (spotifyHandler.dom.repeatButton.style.color != "#1DB954") {
+								spotifyHandler.dom.repeatButton.style.color = "#1DB954";
+							}
+							if (spotifyHandler.dom.repeatButton.innerHTML != '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192Zm3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z" /></svg>') {
+								spotifyHandler.dom.repeatButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192Zm3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z" /></svg>';
+							}
+							if (spotifyHandler.dom.repeatButton.className != "side-button dotted") {
+								spotifyHandler.dom.repeatButton.className = "side-button dotted";
+							}
 							break;
 						case "track":
-							spotifyHandler.dom.repeatButton.style.color = "#1DB954";
-							spotifyHandler.dom.repeatButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 4v1.466a.25.25 0 0 0 .41.192l2.36-1.966a.25.25 0 0 0 0-.384l-2.36-1.966a.25.25 0 0 0-.41.192V3H5a5 5 0 0 0-4.48 7.223.5.5 0 0 0 .896-.446A4 4 0 0 1 5 4h6Zm4.48 1.777a.5.5 0 0 0-.896.446A4 4 0 0 1 11 12H5.001v-1.466a.25.25 0 0 0-.41-.192l-2.36 1.966a.25.25 0 0 0 0 .384l2.36 1.966a.25.25 0 0 0 .41-.192V13h6a5 5 0 0 0 4.48-7.223Z"/><path d="M9 5.5a.5.5 0 0 0-.854-.354l-1.75 1.75a.5.5 0 1 0 .708.708L8 6.707V10.5a.5.5 0 0 0 1 0v-5Z"/></svg>';
-							spotifyHandler.dom.repeatButton.className = "side-button dotted";
+							if (spotifyHandler.dom.repeatButton.style.color != "#1DB954") {
+								spotifyHandler.dom.repeatButton.style.color = "#1DB954";
+							}
+							if (spotifyHandler.dom.repeatButton.innerHTML != '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 4v1.466a.25.25 0 0 0 .41.192l2.36-1.966a.25.25 0 0 0 0-.384l-2.36-1.966a.25.25 0 0 0-.41.192V3H5a5 5 0 0 0-4.48 7.223.5.5 0 0 0 .896-.446A4 4 0 0 1 5 4h6Zm4.48 1.777a.5.5 0 0 0-.896.446A4 4 0 0 1 11 12H5.001v-1.466a.25.25 0 0 0-.41-.192l-2.36 1.966a.25.25 0 0 0 0 .384l2.36 1.966a.25.25 0 0 0 .41-.192V13h6a5 5 0 0 0 4.48-7.223Z"/><path d="M9 5.5a.5.5 0 0 0-.854-.354l-1.75 1.75a.5.5 0 1 0 .708.708L8 6.707V10.5a.5.5 0 0 0 1 0v-5Z"/></svg>') {
+								spotifyHandler.dom.repeatButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 4v1.466a.25.25 0 0 0 .41.192l2.36-1.966a.25.25 0 0 0 0-.384l-2.36-1.966a.25.25 0 0 0-.41.192V3H5a5 5 0 0 0-4.48 7.223.5.5 0 0 0 .896-.446A4 4 0 0 1 5 4h6Zm4.48 1.777a.5.5 0 0 0-.896.446A4 4 0 0 1 11 12H5.001v-1.466a.25.25 0 0 0-.41-.192l-2.36 1.966a.25.25 0 0 0 0 .384l2.36 1.966a.25.25 0 0 0 .41-.192V13h6a5 5 0 0 0 4.48-7.223Z"/><path d="M9 5.5a.5.5 0 0 0-.854-.354l-1.75 1.75a.5.5 0 1 0 .708.708L8 6.707V10.5a.5.5 0 0 0 1 0v-5Z"/></svg>';
+							}
+							if (spotifyHandler.dom.repeatButton.className != "side-button dotted") {
+								spotifyHandler.dom.repeatButton.className = "side-button dotted";
+							}
 							break;
 						default:
 						case "off":
-							spotifyHandler.dom.repeatButton.style.color = null;
-							spotifyHandler.dom.repeatButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192Zm3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z" /></svg>';
-							spotifyHandler.dom.repeatButton.className = "side-button";
+							if (spotifyHandler.dom.repeatButton.style.color != null) {
+								spotifyHandler.dom.repeatButton.style.color = null;
+							}
+							if (spotifyHandler.dom.repeatButton.innerHTML != '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192Zm3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z" /></svg>') {
+								spotifyHandler.dom.repeatButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192Zm3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z" /></svg>';
+							}
+							if (spotifyHandler.dom.repeatButton.className != "side-button") {
+								spotifyHandler.dom.repeatButton.className = "side-button";
+							}
 							break;
 					}
 				}
@@ -231,16 +322,23 @@ var spotifyHandler = {
 		var maxHeight = document.getElementById("below-art-holder").offsetTop - 42 - 48;
 		var maxWidth = window.innerWidth - 48;
 		if (maxHeight < maxWidth) {
-			spotifyHandler.dom.artwork.style.width = maxHeight + "px";
-		}
-		else {
-			spotifyHandler.dom.artwork.style.width = maxWidth + "px";
+			if (spotifyHandler.dom.artwork.style.width != maxHeight + "px") {
+				spotifyHandler.dom.artwork.style.width = maxHeight + "px";
+			}
+		} else {
+			if (spotifyHandler.dom.artwork.style.width != maxWidth + "px") {
+				spotifyHandler.dom.artwork.style.width = maxWidth + "px";
+			}
 		}
 	},
 
-	updateTimes: function(prog, dur) {
-		spotifyHandler.dom.playbackTime.innerHTML = formatSeconds(prog);
-		spotifyHandler.dom.durationTime.innerHTML = formatSeconds(dur);
+	updateTimes: function (prog, dur) {
+		if (spotifyHandler.dom.playbackTime.innerHTML != formatSeconds(prog)) {
+			spotifyHandler.dom.playbackTime.innerHTML = formatSeconds(prog);
+		}
+		if (spotifyHandler.dom.durationTime.innerHTML != formatSeconds(dur)) {
+			spotifyHandler.dom.durationTime.innerHTML = formatSeconds(dur);
+		}
 	},
 
 	refreshDevices: function() {
@@ -294,12 +392,19 @@ var spotifyHandler = {
 
 	setVolume: function(newVolume, volumebarOnly) {
 		spotifyHandler.dom.volumebar.style.background = 'linear-gradient(to right, #1DB954 0%, #1DB954 '+newVolume+'%, #353942 '+newVolume+'%, #353942 100%)';
-		if (spotifyHandler.dom.volumebar.value != newVolume && !changingVolume) {
-			spotifyHandler.dom.volumebar.value = newVolume;
+		if (spotifyHandler.dom.volumebar.value != newVolume) {
+			spotifyHandler.volume = newVolume;
+			if (!changingVolume) {
+				spotifyHandler.dom.volumebar.value = newVolume;
+			}
+			if (!volumebarOnly) {
+				spotifyHandler.api.setVolume(newVolume, {});
+			}
 		}
-		if (!volumebarOnly) {
-			spotifyHandler.api.setVolume(newVolume, {});
-		}
+	},
+
+	getVolume: function () {
+		return spotifyHandler.volume;
 	},
 
 	transferringPlayback: false,
